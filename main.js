@@ -5,13 +5,27 @@ import {OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 const scene = new THREE.Scene()
 
-const geometry = new THREE.SphereGeometry(3, 64, 64)
-const material = new THREE.MeshStandardMaterial({
+const planeGeo = new THREE.PlaneGeometry(9999, 9999);
+const planeMat = new THREE.MeshStandardMaterial({
+    color: "#ff3939",
+    roughness: 0.7
+})
+
+const sphereGeometry = new THREE.SphereGeometry(3, 64, 64)
+const sphereMaterial = new THREE.MeshStandardMaterial({
     color: "#00ff83",
     roughness: 0.5
 })
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+
+const meshPlane = new THREE.Mesh(planeGeo, planeMat)
+
+
+scene.add(meshPlane)
+meshPlane.rotateX(-Math.PI / 2)
+meshPlane.translateZ(-2)
+
+const meshSphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
+scene.add(meshSphere)
 
 const sizes = {
     width: window.innerWidth,
@@ -22,13 +36,10 @@ const light = new THREE.PointLight(0xffffff, 100, 100)
 light.position.set(0,10,10)
 scene.add(light)
 
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height)
-camera.position.z = 10
+
+const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height)
+camera.position.z = 20
 scene.add(camera)
-
-
-
-scene.background = 0xffffff;
 
 const canvas = document.querySelector(".webgl")
 const renderer = new THREE.WebGLRenderer({ canvas })
@@ -40,8 +51,10 @@ const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 controls.enablePan = false
 controls.enableZoom = false
-controls.autoRotate = true
+controls.autoRotate = false
 controls.autoRotateSpeed = 5
+controls.minPolarAngle = 0
+controls.maxPolarAngle = Math.PI * 0.5
 
 window.addEventListener("resize", () => {
     sizes.width = window.innerWidth
@@ -60,7 +73,7 @@ const loop = () => {
 loop()
 
 const tl = gsap.timeline({ defaults: { duration: 1 } })
-tl.fromTo(mesh.scale, { z: 0, x: 0, y: 0 }, { z: 1, x: 1, y: 1 })
+tl.fromTo(meshSphere.scale, { z: 0, x: 0, y: 0 }, { z: 1, x: 1, y: 1 })
 tl.fromTo("nav", { y: "-100%" }, { y: "0%" })
 tl.fromTo(".title", { opacity: 0 }, { opacity: 1 })
 
@@ -77,6 +90,6 @@ window.addEventListener("mousemove", (e) => {
             150,
         ]
         let newColor = new THREE.Color(`rgb(${rgb.join(",")})`)
-        gsap.to(mesh.material.color, { r: newColor.r, g: newColor.g, b: newColor.b })
+        gsap.to(meshSphere.material.color, { r: newColor.r, g: newColor.g, b: newColor.b })
     }
 } )

@@ -6,7 +6,7 @@
 
 body,html {
     overflow-x: hidden;
-    font-family: "Baskervville SC", serif;
+    font-family: "Young Serif", serif;
 }
 
 .baskervville-sc-regular {
@@ -53,8 +53,18 @@ nav ul {
     color: white;
     z-index: 2;
     position: absolute;
-    font-size: 3rem;
+    text-align: center;
     left: 50%;
-    top: 25%;
+    top: 10%;
     transform: translate(-50%, -75%);
+}
+
+.titleCard {
+    font-size: 3rem;
+    font-weight: normal;
+}
+
+.card {
+    font-size: 1rem;
+    font-weight: normal;
 }
