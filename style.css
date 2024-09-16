@@ -29,7 +29,7 @@ body,html {
 }
 
 nav {
-    color: white;
+    color: black;
     z-index: 2;
     position: relative;
     padding: 4rem 8rem;
@@ -39,7 +39,7 @@ nav {
 
 nav a {
     text-decoration: none;
-    color: white;
+    color: black;
     font-weight: bold;
 }
 
@@ -50,7 +50,7 @@ nav ul {
 }
 
 .title {
-    color: white;
+    color: black;
     z-index: 2;
     position: absolute;
     text-align: center;
@@ -67,4 +67,13 @@ nav ul {
 .card {
     font-size: 1rem;
     font-weight: normal;
+}
+
+.not-selectable {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
