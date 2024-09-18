@@ -48,45 +48,118 @@ new RGBELoader()
 
 //names 
 const blogoN = "blogo"
+const melonN = "melon"
+const arcadeN = "arcade"
+const carN = "car"
+const elaineN = "elaine"
 
+const carArr = [];
+const arcadeArr = [];
 
 let blogo;
 loader.load(
 
     "./blogo.glb",
     function (glb) {
-        blogo = glb.scene
-        blogo.children[0].name = blogoN
-        blogo.children[0].layers.set(0)
-        blogo.translateZ(-5)
+        blogo = glb.scene;
+        blogo.layers.set(1)
+        let i;
+        for (i = 0; i < blogo.children.length; i++) {
+            blogo.children[i].layers.set(1)
+        }
+        arcadeGroup.push(blogo)
+        console.log("arcadeGroup length is: " + arcadeGroup.length)
         scene.add(blogo)
-        gsap.fromTo(blogo.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
-        gsap.fromTo(blogo.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
-
+    }
+)
+let car;
+loader.load(
+    "./car.glb",
+    function (glb) {
+        car = glb.scene
+        car.layers.set(0)
+        let i;
+        for (i = 0; i < car.children.length; i++) {
+            car.children[i].layers.set(0)
+            car.children[i].name = carN
+            carArr.push(car.children[i])
+        }
+        console.log("carArr size is: " + carArr.length);
+        car.translateZ(5)
+        car.translateX(-15)
+        scene.add(car)
+        gsap.fromTo(car.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+        gsap.fromTo(car.position, { y: 20 }, { y: -3, duration: 5, ease: "bounce.out" })
     }
 )
 
-let lima;
+let melon;
 loader.load(
 
-    "./lima.glb",
+    "./melon.glb",
     function (glb) {
-        lima = glb.scene;
-        let i;
-        for (i = 0; i < lima.children.length; i++) {
-            lima.children[i].layers.set(1)
-        }
-        bGroup.push(lima)
-        console.log("bGroup length is: " + bGroup.length)
-        scene.add(lima)
+        melon = glb.scene
+        melon.children[0].name = melonN
+        melon.children[0].layers.set(0)
+        melon.translateZ(-5)
+        melon.translateX(7)
+        scene.add(melon)
+        gsap.fromTo(melon.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+        gsap.fromTo(melon.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
+
     }
 )
 
-const sphereGeometry = new THREE.SphereGeometry(3, 64, 64)
+
+
+let arcade;
+loader.load(
+    "./arcade.glb",
+    function (glb) {
+        arcade = glb.scene
+        arcade.layers.set(0)
+        let i;
+        for (i = 0; i < arcade.children.length; i++) {
+            arcade.children[i].layers.set(0)
+            arcade.children[i].name = arcadeN
+            arcadeArr.push(arcade.children[i])
+        }
+        console.log("arcadeArr size is: " + arcadeArr.length);
+        arcade.translateZ(5)
+        arcade.translateX(15)
+        scene.add(arcade)
+        gsap.fromTo(arcade.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+        gsap.fromTo(arcade.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
+    }
+)
+
+
+
+let elaine;
+loader.load(
+
+    "./elaine.glb",
+    function (glb) {
+        elaine = glb.scene
+
+        elaine.children[0].material.wireframe = true
+        elaine.children[0].name = elaineN
+        elaine.children[0].layers.set(0)
+        elaine.translateZ(-5)
+        elaine.translateX(-7)
+        scene.add(elaine)
+        gsap.fromTo(elaine.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+        gsap.fromTo(elaine.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
+
+    }
+)
+
+//const sphereGeometry = new THREE.SphereGeometry(3, 64, 64)
+/*
 const boxMaterial = new THREE.MeshStandardMaterial({
     color: "#00ff83"
 })
-
+*/
 const boxGeo = new THREE.BoxGeometry(8, 8, 8)
 boxGeo.translate(0, 4, 0)
 const boxWireGeo = new THREE.EdgesGeometry(boxGeo)
@@ -106,12 +179,12 @@ scene.add(meshPlane)
 meshPlane.rotateX(-Math.PI / 2)
 meshPlane.translateZ(-3)
 
-const meshSphere = new THREE.Mesh(sphereGeometry, boxMaterial)
+//const meshSphere = new THREE.Mesh(sphereGeometry, boxMaterial)
 //scene.add(meshSphere)
 
-const mmuGroup = [blogoN]
-let bGroup = []
-let fGroup = []
+const mmuGroup = [carN, melonN, arcadeN, elaineN]
+let carGroup = []
+let arcadeGroup = []
 
 
 //render
@@ -127,6 +200,7 @@ camera.layers.disable(1)
 camera.layers.enable(2)
 
 camera.position.z = 30
+camera.position.y = 10
 scene.add(camera)
 
 const canvas = document.querySelector(".webgl")
@@ -185,15 +259,17 @@ let rgb = []
 window.addEventListener("mousedown", (e) => {
     mouseDown = true;
     
-
+    /*
     if (view == 0) {
         if (INTERSECTED && e.button == 0) {
-            if (INTERSECTED.name == blogoN) {
-                changeView(1)
+            if (INTERSECTED.name == arcadeN) {
+                changeView(1);
+            } else if (INTERSECTED.name == carN) {
+                changeView(2);
             }
         }
     }
-    
+    */
 })
 window.addEventListener("keyup", (e) => {
     if (e.key === "Escape") {
@@ -221,21 +297,35 @@ window.addEventListener("mousemove", (e) => {
 
 function changeView(num) {
     view = num;
-    let i, j, ibk, ifk;
+    let i, j, iCk
     switch (num) {
         case 0:
             for (i = 0; i < mmuGroup.length; i++) {
                 console.log(scene.getObjectByName(mmuGroup[i]))
                 scene.getObjectByName(mmuGroup[i]).layers.set(0)
             }
-            for (i = 0; i < bGroup.length; i++) {
+            for (i = 0; i < arcadeGroup.length; i++) {
 
-                ibk = bGroup[i].children;
+                iCk = scene.getObjectsByProperty("name", arcadeGroup[i])
 
-                for (j = 0; j < ibk.length; j++) {
-                    ibk[j].layers.set(1)
+                for (j = 0; j < iCk.length; j++) {
+                    iCk[j].layers.set(1)
                 }
 
+            }
+            for (i = 0; i < carGroup.length; i++) {
+                iCk = scene.getObjectsByProperty("name", carGroup[i])
+
+                for (j = 0; j < iCk.length; j++) {
+                    iCk[j].layers.set(1);
+                }
+            }
+
+            for (i = 0; i < carArr.length; i++) {
+                carArr[i].layers.set(0);
+            }
+            for (i = 0; i < arcadeArr.length; i++) {
+                arcadeArr[i].layers.set(0);
             }
 
 
@@ -259,22 +349,64 @@ function changeView(num) {
                 //console.log(scene.getObjectByName(mmuGroup[i]))
                 scene.getObjectByName(mmuGroup[i]).layers.set(1)
             }
-            for (i = 0; i < bGroup.length; i++) {
+            for (i = 0; i < arcadeGroup.length; i++) {
 
-                console.log(bGroup[i])
-                ibk = bGroup[i].children;
+                console.log(arcadeGroup[i])
+                iCk = scene.getObjectsByProperty("name", arcadeGroup[i]);
 
-                for (j = 0; j < ibk.length; j++) {
-                    ibk[j].layers.set(2)
+                for (j = 0; j < iCk.length; j++) {
+                    iCk[j].layers.set(2)
                 }
             }
-            for (i = 0; i < fGroup.length; i++) {
-                ifk = fGroup[i].children;
+            for (i = 0; i < carGroup.length; i++) {
+                iCk = scene.getObjectsByProperty("name", carGroup[i]);
 
-                for (j = 0; j < ifk.length; j++) {
-                    ifk[j].layers.set(1)
+                for (j = 0; j < iCk.length; j++) {
+                    iCk[j].layers.set(1)
                 }
             }
+
+            for (i = 0; i < carArr.length; i++) {
+                carArr[i].layers.set(1);
+            }
+            for (i = 0; i < arcadeArr.length; i++) {
+                arcadeArr[i].layers.set(1);
+            }
+
+            document.getElementById("arcadeV").style.zIndex = 2
+
+            controls.autoRotate = false
+            controls.enableZoom = true;
+            break;
+        case 2:
+            for (i = 0; i < mmuGroup.length; i++) {
+                //console.log(scene.getObjectByName(mmuGroup[i]))
+                scene.getObjectByName(mmuGroup[i]).layers.set(1)
+            }
+            for (i = 0; i < arcadeGroup.length; i++) {
+
+                console.log(arcadeGroup[i])
+                iCk = scene.getObjectsByProperty("name", arcadeGroup[i]);
+
+                for (j = 0; j < iCk.length; j++) {
+                    iCk[j].layers.set(1)
+                }
+            }
+            for (i = 0; i < carGroup.length; i++) {
+                iCk = scene.getObjectsByProperty("name", carGroup[i]);
+
+                for (j = 0; j < iCk.length; j++) {
+                    iCk[j].layers.set(2)
+                }
+            }
+
+            for (i = 0; i < carArr.length; i++) {
+                carArr[i].layers.set(1);
+            }
+            for (i = 0; i < arcadeArr.length; i++) {
+                arcadeArr[i].layers.set(1);
+            }
+
             controls.autoRotate = false
             controls.enableZoom = true;
             break;
@@ -300,7 +432,7 @@ const loop = () => {
         
         if (INTERSECTED) {
             //console.log(INTERSECTED.parent.position)
-
+            //console.log(INTERSECTED.position)
             //gsap.fromTo(boxWireframe.position, { y: 0 }, {y: -3, duration: 5})
             boxWireframe.position.setX(INTERSECTED.parent.position.x)
             boxWireframe.position.setY(INTERSECTED.parent.position.y)
@@ -330,6 +462,9 @@ const loop = () => {
     window.requestAnimationFrame(loop);
 }
 loop()
+
+document.getElementById("arcadeV").muted = true
+document.getElementById("arcadeV").style.zIndex = 0
 
 if (view == 0) {
     //anims
