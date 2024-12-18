@@ -5,7 +5,51 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js"
 import {RGBELoader } from "three/addons/loaders/RGBELoader.js"
-//init stuff
+
+class Probject {
+    constructor(objName, assetPath, year, tags, blog) {
+        this.probj;
+        this.probjArr = [];
+        this.objName = objName;
+        this.assetPath = assetPath;
+        this.year = year;
+        this.tags = tags;
+        this.blog = blog;
+    }
+    
+}
+
+function probjLoad(probject, loader, layer) {
+
+    loader.load(
+        probject.assetPath,
+        function (glb) {
+            probject.probj = glb.scene;
+            probject.probj.layers.set(layer);
+            let i;
+            for (i = 0; i < probject.probj.children.length; i++) {
+                probject.probj.children[i].layers.set(layer);
+                probject.probj.children[i].name = probject.objName;
+                probject.probjArr.push(probject.probj.children[i]);
+            }
+            scene.add(probject.probj);
+
+            switch (probject.year) {
+                case 2024:
+                    obj2024.push(probject);
+                    break;
+                case 2023:
+                    obj2023.push(probject);
+                    break;
+                default:
+                    obj2022.push(probject);
+                    break;
+            }
+        }
+    )
+    
+    return probject.probj;
+}
 
 const scene = new THREE.Scene()
 
@@ -26,8 +70,6 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('/examples/jsm/libs/draco/');
 loader.setDRACOLoader(dracoLoader);
 
-let view = 0;
-
 new RGBELoader()
     .setPath("./")
     .load("opk.hdr", function (texture) {
@@ -46,126 +88,51 @@ new RGBELoader()
         //scene.environment = texture;
     })
 
-//names 
-const blogoN = "blogo"
-const melonN = "melon"
-const arcadeN = "arcade"
-const carN = "car"
-const elaineN = "elaine"
+let obj2022 = [];
+let obj2023 = [];
+let obj2024 = [];
+//names
+const objNames = ["melon", "arcade", "car"];
+const elaineN = "elaine";
 
-const carArr = [];
-const arcadeArr = [];
+//tags
+const melonTags = ["CV", "AI", "software", "PyTorch", "Python"];
+const arcadeTags = ["hardware", "CAD", "Fusion 360"];
+const carTags = ["hardware", "3d printing", "software", "arduino", "raspberry pi", "Fusion 360", "CAD"];
+const elaineTags = ["Unity", "software", "Photon Bolt", "C\#"];
 
-let blogo;
+//Probjects
+const melon = new Probject(objNames[0], "assets/melon.glb", 2024, melonTags);
+const arcade = new Probject(objNames[1], "assets/arcade.glb", 2024, arcadeTags);
+const car = new Probject(objNames[2], "assets/car.glb", 2024, carTags);
+const elaine = new Probject(elaineN, "assets/elaine.glb", 2024, elaineTags);
+
+
+
+//Load
+melon.probj = probjLoad(melon, loader, 0);
+arcade.probj = probjLoad(arcade, loader, 0);
+car.probj = probjLoad(car, loader, 0);
+
+let telaine;
 loader.load(
 
-    "./blogo.glb",
+    elaine.assetPath,
     function (glb) {
-        blogo = glb.scene;
-        blogo.layers.set(1)
-        let i;
-        for (i = 0; i < blogo.children.length; i++) {
-            blogo.children[i].layers.set(1)
-        }
-        arcadeGroup.push(blogo)
-        console.log("arcadeGroup length is: " + arcadeGroup.length)
-        scene.add(blogo)
-    }
-)
-let car;
-loader.load(
-    "./car.glb",
-    function (glb) {
-        car = glb.scene
-        car.layers.set(0)
-        let i;
-        for (i = 0; i < car.children.length; i++) {
-            car.children[i].layers.set(0)
-            car.children[i].name = carN
-            carArr.push(car.children[i])
-        }
-        console.log("carArr size is: " + carArr.length);
-        car.translateZ(5)
-        car.translateX(-15)
-        scene.add(car)
-        gsap.fromTo(car.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
-        gsap.fromTo(car.position, { y: 20 }, { y: -3, duration: 5, ease: "bounce.out" })
+        telaine = glb.scene
+
+        telaine.children[0].material.wireframe = true
+        telaine.children[0].name = elaine.objName;
+        telaine.children[0].layers.set(0)
+        scene.add(telaine)
     }
 )
 
-let melon;
-loader.load(
-
-    "./melon.glb",
-    function (glb) {
-        melon = glb.scene
-        melon.children[0].name = melonN
-        melon.children[0].layers.set(0)
-        melon.translateZ(-5)
-        melon.translateX(7)
-        scene.add(melon)
-        gsap.fromTo(melon.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
-        gsap.fromTo(melon.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
-
-    }
-)
-
-
-
-let arcade;
-loader.load(
-    "./arcade.glb",
-    function (glb) {
-        arcade = glb.scene
-        arcade.layers.set(0)
-        let i;
-        for (i = 0; i < arcade.children.length; i++) {
-            arcade.children[i].layers.set(0)
-            arcade.children[i].name = arcadeN
-            arcadeArr.push(arcade.children[i])
-        }
-        console.log("arcadeArr size is: " + arcadeArr.length);
-        arcade.translateZ(5)
-        arcade.translateX(15)
-        scene.add(arcade)
-        gsap.fromTo(arcade.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
-        gsap.fromTo(arcade.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
-    }
-)
-
-
-
-let elaine;
-loader.load(
-
-    "./elaine.glb",
-    function (glb) {
-        elaine = glb.scene
-
-        elaine.children[0].material.wireframe = true
-        elaine.children[0].name = elaineN
-        elaine.children[0].layers.set(0)
-        elaine.translateZ(-5)
-        elaine.translateX(-7)
-        scene.add(elaine)
-        gsap.fromTo(elaine.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
-        gsap.fromTo(elaine.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
-
-    }
-)
-
-//const sphereGeometry = new THREE.SphereGeometry(3, 64, 64)
-/*
-const boxMaterial = new THREE.MeshStandardMaterial({
-    color: "#00ff83"
-})
-*/
 const boxGeo = new THREE.BoxGeometry(8, 8, 8)
 boxGeo.translate(0, 4, 0)
 const boxWireGeo = new THREE.EdgesGeometry(boxGeo)
 const boxWireMat = new THREE.LineBasicMaterial({ color: 0xff3939 })
 const boxWireframe = new THREE.LineSegments(boxWireGeo, boxWireMat)
-//const boxWireframe = new THREE.Mesh(boxGeo, boxWireMat)
 
 const meshPlane = new THREE.Mesh(planeGeo, planeMat)
 
@@ -178,14 +145,6 @@ meshPlane.layers.set(2)
 scene.add(meshPlane)
 meshPlane.rotateX(-Math.PI / 2)
 meshPlane.translateZ(-3)
-
-//const meshSphere = new THREE.Mesh(sphereGeometry, boxMaterial)
-//scene.add(meshSphere)
-
-const mmuGroup = [carN, melonN, arcadeN, elaineN]
-let carGroup = []
-let arcadeGroup = []
-
 
 //render
 
@@ -259,25 +218,18 @@ let rgb = []
 window.addEventListener("mousedown", (e) => {
     mouseDown = true;
     
-    /*
-    if (view == 0) {
-        if (INTERSECTED && e.button == 0) {
-            if (INTERSECTED.name == arcadeN) {
-                changeView(1);
-            } else if (INTERSECTED.name == carN) {
-                changeView(2);
+    
+    if (INTERSECTED && e.button == 0) {
+        for (let i = 0; i < obj2024.length; i++) {
+            if (obj2024[i].objName == INTERSECTED.name) {
+                window.open(obj2024[i].blog);
+                break;
             }
         }
     }
-    */
+    
+    
 })
-window.addEventListener("keyup", (e) => {
-    if (e.key === "Escape") {
-        changeView(0);
-        
-    }
-})
-
 window.addEventListener("mouseup", () => (mouseDown = false))
 window.addEventListener("mousemove", (e) => {
 
@@ -295,134 +247,11 @@ window.addEventListener("mousemove", (e) => {
     }
 })
 
-function changeView(num) {
-    view = num;
-    let i, j, iCk
-    switch (num) {
-        case 0:
-            for (i = 0; i < mmuGroup.length; i++) {
-                console.log(scene.getObjectByName(mmuGroup[i]))
-                scene.getObjectByName(mmuGroup[i]).layers.set(0)
-            }
-            for (i = 0; i < arcadeGroup.length; i++) {
-
-                iCk = scene.getObjectsByProperty("name", arcadeGroup[i])
-
-                for (j = 0; j < iCk.length; j++) {
-                    iCk[j].layers.set(1)
-                }
-
-            }
-            for (i = 0; i < carGroup.length; i++) {
-                iCk = scene.getObjectsByProperty("name", carGroup[i])
-
-                for (j = 0; j < iCk.length; j++) {
-                    iCk[j].layers.set(1);
-                }
-            }
-
-            for (i = 0; i < carArr.length; i++) {
-                carArr[i].layers.set(0);
-            }
-            for (i = 0; i < arcadeArr.length; i++) {
-                arcadeArr[i].layers.set(0);
-            }
-
-
-            controls.enableRotate = true;
-            controls.enableZoom = false;
-            //reset camera angle
-            console.log(camera.position)
-            camera.position.setX(0)
-            camera.position.setY(0)
-            camera.position.setZ(30)
-            console.log(camera.position)
-
-            const tl = gsap.timeline({ defaults: { duration: 2 } })
-
-            tl.fromTo(".title", { opacity: 0 }, { opacity: 1, ease: "power2.in" })
-            tl.fromTo(controls, { autoRotate: false }, { autoRotate: true, duration: 3 })
-            tl.fromTo(controls, { autoRotateSpeed: 0 }, { autoRotateSpeed: 0.8, ease: "power2.in" })
-            break;
-        case 1:
-            for (i = 0; i < mmuGroup.length; i++) {
-                //console.log(scene.getObjectByName(mmuGroup[i]))
-                scene.getObjectByName(mmuGroup[i]).layers.set(1)
-            }
-            for (i = 0; i < arcadeGroup.length; i++) {
-
-                console.log(arcadeGroup[i])
-                iCk = scene.getObjectsByProperty("name", arcadeGroup[i]);
-
-                for (j = 0; j < iCk.length; j++) {
-                    iCk[j].layers.set(2)
-                }
-            }
-            for (i = 0; i < carGroup.length; i++) {
-                iCk = scene.getObjectsByProperty("name", carGroup[i]);
-
-                for (j = 0; j < iCk.length; j++) {
-                    iCk[j].layers.set(1)
-                }
-            }
-
-            for (i = 0; i < carArr.length; i++) {
-                carArr[i].layers.set(1);
-            }
-            for (i = 0; i < arcadeArr.length; i++) {
-                arcadeArr[i].layers.set(1);
-            }
-
-            document.getElementById("arcadeV").style.zIndex = 2
-
-            controls.autoRotate = false
-            controls.enableZoom = true;
-            break;
-        case 2:
-            for (i = 0; i < mmuGroup.length; i++) {
-                //console.log(scene.getObjectByName(mmuGroup[i]))
-                scene.getObjectByName(mmuGroup[i]).layers.set(1)
-            }
-            for (i = 0; i < arcadeGroup.length; i++) {
-
-                console.log(arcadeGroup[i])
-                iCk = scene.getObjectsByProperty("name", arcadeGroup[i]);
-
-                for (j = 0; j < iCk.length; j++) {
-                    iCk[j].layers.set(1)
-                }
-            }
-            for (i = 0; i < carGroup.length; i++) {
-                iCk = scene.getObjectsByProperty("name", carGroup[i]);
-
-                for (j = 0; j < iCk.length; j++) {
-                    iCk[j].layers.set(2)
-                }
-            }
-
-            for (i = 0; i < carArr.length; i++) {
-                carArr[i].layers.set(1);
-            }
-            for (i = 0; i < arcadeArr.length; i++) {
-                arcadeArr[i].layers.set(1);
-            }
-
-            controls.autoRotate = false
-            controls.enableZoom = true;
-            break;
-        default:
-            break;
-    }
-}
-
 let INTERSECTED;
 //main loop
 const loop = () => {
     controls.update()
     
-
-    
-
     raycaster.setFromCamera(pointer, camera)
 
     const intersects = raycaster.intersectObjects(scene.children)
@@ -431,9 +260,6 @@ const loop = () => {
 
         
         if (INTERSECTED) {
-            //console.log(INTERSECTED.parent.position)
-            //console.log(INTERSECTED.position)
-            //gsap.fromTo(boxWireframe.position, { y: 0 }, {y: -3, duration: 5})
             boxWireframe.position.setX(INTERSECTED.parent.position.x)
             boxWireframe.position.setY(INTERSECTED.parent.position.y)
             boxWireframe.position.setZ(INTERSECTED.parent.position.z)
@@ -461,21 +287,67 @@ const loop = () => {
     renderer.render(scene, camera);
     window.requestAnimationFrame(loop);
 }
-loop()
 
-document.getElementById("arcadeV").muted = true
-document.getElementById("arcadeV").style.zIndex = 0
+const rowSize = Math.floor((window.innerWidth / window.innerHeight) * 5)
+let colNum = 16;
+THREE.DefaultLoadingManager.onLoad = function () {
+    elaine.probj = telaine;
+    obj2024.push(elaine);
+    console.log("rowSize is: " + rowSize);
+    console.log(obj2024.length);
+    let index = 0;
 
-if (view == 0) {
-    //anims
-    const tl = gsap.timeline({ defaults: { duration: 2 } })
+    if (rowSize % 2 == 0) {
+        for (let i = 0; i < Math.floor(obj2024.length / rowSize); i++) {
+            for (let j = 0; j < rowSize; j++) {
+                if (j % 2 == 0) {
+                    obj2024[index].probj.translateX(5 + Math.floor(j/2) * 10);
+                    console.log(5 + Math.floor(j / 2) * 10);
+                } else {
+                    obj2024[index].probj.translateX(-5 - Math.floor(j/2) * 10);
+                    console.log(-5 - Math.floor(j / 2) * 10)
+                }
 
-    //tl.fromTo(meshSphere.scale, { z: 0, x: 0, y: 0 }, { z: 1, x: 1, y: 1 })
-    //tl.fromTo("nav", { y: "-100%" }, { y: "0%" })
-    tl.fromTo(".title", { opacity: 0 }, { opacity: 1, ease: "power2.in" })
-    tl.fromTo(controls, { autoRotate: false }, { autoRotate: true, duration: 3 })
-    tl.fromTo(controls, { autoRotateSpeed: 0 }, { autoRotateSpeed: 0.8, ease: "power2.in" })
+                obj2024[index].probj.translateZ(colNum);
+                console.log("index is: " + index);
+                index++;
+            }
 
-//gsap.fromTo(meshBox.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
-//gsap.fromTo(meshBox.position, { y: 3 }, { y: 0, duration: 2, ease: "bounce.out" })
+            colNum -= 8;
+        }
+    } else {
+        for (let i = 0; i < Math.floor(obj2024.length / rowSize); i++) {
+            console.log("outside");
+            for (let j = 0; j < rowSize; j++) {
+                console.log("inside");
+                if (j % 2 == 0 && j != 0) {
+                    obj2024[index].probj.translateX(10 + Math.floor((j-0.1) / 2) * 10);
+                    console.log(10 + Math.floor(j / 2) * 10);
+                } else if (j != 0) {
+                    obj2024[index].probj.translateX(-10 - Math.floor(j / 2) * 10);
+                    console.log(-10 - Math.floor(j / 2) * 10);
+                }
+                obj2024[index].probj.translateZ(colNum);
+                
+                index++;
+            }
+
+            colNum -= 8;
+        }
+    }
+    //deal with 2024 remainders
+
+    //copy and paste for 2023, 2022, etc. 
+    
+
+
+    gsap.fromTo(melon.probj.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+    gsap.fromTo(melon.probj.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
+    gsap.fromTo(arcade.probj.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+    gsap.fromTo(arcade.probj.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
+    gsap.fromTo(car.probj.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+    gsap.fromTo(car.probj.position, { y: 20 }, { y: -3, duration: 5, ease: "bounce.out" })
+    gsap.fromTo(elaine.probj.rotation, { y: 0 }, { y: Math.PI * 2 + 0.2, duration: 3, ease: "power1.out" })
+    gsap.fromTo(elaine.probj.position, { y: 3 }, { y: -3, duration: 2, ease: "bounce.out" })
+    loop()
 }
