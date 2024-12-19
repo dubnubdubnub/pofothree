@@ -101,11 +101,13 @@ const arcadeTags = ["hardware", "CAD", "Fusion 360"];
 const carTags = ["hardware", "3d printing", "software", "arduino", "raspberry pi", "Fusion 360", "CAD"];
 const elaineTags = ["Unity", "software", "Photon Bolt", "C\#"];
 
+const gDoc = "https://docs.google.com/document/d/1lXcfVB8PPPlLbiHW4w2g7MMawFrx0BrIrCmtron_dYQ/edit?usp=sharing";
+
 //Probjects
-const melon = new Probject(objNames[0], "assets/melon.glb", 2024, melonTags);
-const arcade = new Probject(objNames[1], "assets/arcade.glb", 2024, arcadeTags);
-const car = new Probject(objNames[2], "assets/car.glb", 2024, carTags);
-const elaine = new Probject(elaineN, "assets/elaine.glb", 2024, elaineTags);
+const melon = new Probject(objNames[0], "assets/melon.glb", 2024, melonTags, gDoc);
+const arcade = new Probject(objNames[1], "assets/arcade.glb", 2024, arcadeTags, gDoc);
+const car = new Probject(objNames[2], "assets/car.glb", 2024, carTags, gDoc);
+const elaine = new Probject(elaineN, "assets/elaine.glb", 2024, elaineTags, gDoc);
 
 
 
@@ -295,6 +297,10 @@ THREE.DefaultLoadingManager.onLoad = function () {
     obj2024.push(elaine);
     console.log("rowSize is: " + rowSize);
     console.log(obj2024.length);
+
+    let loadingScreen = document.getElementById('loading screen');
+    loadingScreen.style.display = 'none';
+
     let index = 0;
 
     if (rowSize % 2 == 0) {

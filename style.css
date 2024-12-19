@@ -59,6 +59,22 @@ nav ul {
     transform: translate(-50%, -75%);
 }
 
+.paint-screen {
+    background-color: white;
+    z-index: 2;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.loading-text {
+    font-size: 5rem;
+}
+
 .titleCard {
     font-size: 3rem;
     font-weight: normal;
